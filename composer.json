@@ -1,0 +1,27 @@
+{
+    "name": "techgrapple/simple-code-block-highlighter",
+    "description": "WordPress plugin that enhances code blocks with line numbers, copy functionality, and theme options.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "wp-coding-standards/wpcs": "^3.2"
+    },
+    "scripts": {
+        "lint": [
+            "php -l simple-code-block-highlighter.php",
+            "php -l uninstall.php"
+        ],
+        "phpcs": "phpcs"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "sort-packages": true
+    }
+}

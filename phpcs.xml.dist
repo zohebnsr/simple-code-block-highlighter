@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<ruleset name="Simple Code Block Highlighter">
+    <description>WordPress Coding Standards checks for Simple Code Block Highlighter.</description>
+
+    <arg name="extensions" value="php"/>
+    <arg name="colors"/>
+    <arg value="sp"/>
+
+    <config name="testVersion" value="7.4-"/>
+
+    <file>simple-code-block-highlighter.php</file>
+    <file>uninstall.php</file>
+
+    <exclude-pattern>vendor/*</exclude-pattern>
+
+    <rule ref="WordPress"/>
+    <rule ref="PHPCompatibilityWP"/>
+</ruleset>

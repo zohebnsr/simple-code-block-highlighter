@@ -1,0 +1,96 @@
+pre.custom-code-block {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    margin: 1.5em 0;
+    padding: 0;
+    overflow: auto;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    background: #f6f8fa;
+    color: #24292f;
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    line-height: 1.6;
+}
+
+pre.custom-code-block-dark {
+    border-color: #30363d;
+    background: #0d1117;
+    color: #e6edf3;
+}
+
+pre.custom-code-block.no-line-numbers {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.custom-code-block .line-numbers-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 1rem 0.75rem;
+    border-right: 1px solid #d0d7de;
+    background: rgba(175, 184, 193, 0.16);
+    color: #57606a;
+    text-align: right;
+    user-select: none;
+}
+
+.custom-code-block-dark .line-numbers-rows {
+    border-right-color: #30363d;
+    background: rgba(110, 118, 129, 0.18);
+    color: #8b949e;
+}
+
+.custom-code-block .line-numbers-rows span {
+    min-width: 2ch;
+}
+
+.custom-code-block .custom-code-content {
+    display: block;
+    min-width: 0;
+    padding: 1rem 4.75rem 1rem 1rem;
+    overflow: visible;
+    white-space: pre;
+    color: inherit;
+    font: inherit;
+}
+
+.custom-code-block.no-line-numbers .custom-code-content {
+    grid-column: 1;
+}
+
+.custom-code-block .copy-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    min-height: 2rem;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #24292f;
+    cursor: pointer;
+    font: 600 0.8125rem/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.custom-code-block-dark .copy-button {
+    border-color: #30363d;
+    background: #21262d;
+    color: #e6edf3;
+}
+
+.custom-code-block .copy-button:hover,
+.custom-code-block .copy-button:focus {
+    background: #f3f4f6;
+}
+
+.custom-code-block-dark .copy-button:hover,
+.custom-code-block-dark .copy-button:focus {
+    background: #30363d;
+}
+
+.simple-code-block-highlighter-copy-source {
+    position: fixed;
+    top: -9999px;
+    left: -9999px;
+}

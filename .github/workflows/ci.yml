@@ -1,0 +1,36 @@
+name: CI
+
+on:
+    pull_request:
+    push:
+        branches:
+            - main
+            - master
+
+permissions:
+    contents: read
+
+env:
+    COMPOSER_ROOT_VERSION: 1.1.0
+
+jobs:
+    lint:
+        name: Coding standards and syntax checks
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@v4
+
+            - name: Install PHP dependencies
+              run: composer install --no-interaction --no-progress --prefer-dist
+
+            - name: Check PHP syntax
+              run: composer lint
+
+            - name: Check WordPress coding standards
+              run: composer phpcs
+
+            - name: Check JavaScript syntax
+              run: node --check script.js
