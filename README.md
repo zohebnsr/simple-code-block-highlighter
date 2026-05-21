@@ -4,6 +4,8 @@ Simple Code Block Highlighter is a WordPress plugin that enhances core code and 
 
 Download from WordPress.org: https://wordpress.org/plugins/simple-code-block-highlighter/
 
+Plugin details page: https://www.techgrapple.com/simple-code-block-highlighter-free-plugin-for-wordpress/
+
 ## Security-focused implementation
 
 - Uses the WordPress Settings API for option persistence and nonce handling.

@@ -16,6 +16,8 @@ Simple Code Block Highlighter enhances the default WordPress code and preformatt
 
 The plugin uses the WordPress Settings API, validates and sanitizes saved options, escapes admin output, and avoids inline JavaScript-generated HTML for line numbers. Syntax highlighting is served from the plugin files and does not load a third-party CDN on visitor pages.
 
+Plugin details page: https://www.techgrapple.com/simple-code-block-highlighter-free-plugin-for-wordpress/
+
 == Installation ==
 
 1. Upload the plugin folder to `/wp-content/plugins/simple-code-block-highlighter`.
