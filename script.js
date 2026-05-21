@@ -3,11 +3,43 @@
 
     const settings = window.codeBlockSettings || {};
     const lineNumbersEnabled = settings.line_numbers !== 'off';
+    const syntaxEnabled = settings.syntax !== 'off';
     const theme = settings.theme === 'dark' ? 'dark' : 'light';
     const copyText = settings.copy_text || 'Copy';
     const copiedText = settings.copied_text || 'Copied';
     const copyFailedText = settings.copy_failed_text || 'Copy failed';
     const copyLabel = settings.copy_label || 'Copy code to clipboard';
+    const autoDetectLanguages = [
+        'xml',
+        'css',
+        'javascript',
+        'typescript',
+        'php',
+        'python',
+        'json',
+        'bash',
+        'shell',
+        'sql',
+        'java',
+        'cpp',
+        'csharp',
+        'ruby',
+        'go',
+        'markdown',
+        'yaml'
+    ];
+    const languageAliases = {
+        cplusplus: 'cpp',
+        cs: 'csharp',
+        csharp: 'csharp',
+        html: 'xml',
+        js: 'javascript',
+        md: 'markdown',
+        py: 'python',
+        sh: 'bash',
+        ts: 'typescript',
+        yml: 'yaml'
+    };
 
     function createLineNumbers(codeText) {
         const lineNumbers = document.createElement('div');
@@ -63,12 +95,109 @@
         }, 1600);
     }
 
+    function normalizeLanguage(language) {
+        const normalized = String(language || '')
+            .toLowerCase()
+            .replace(/^language-/, '')
+            .replace(/^lang-/, '')
+            .replace(/^brush:/, '')
+            .replace(/[^a-z0-9+#-]/g, '');
+
+        return languageAliases[normalized] || normalized;
+    }
+
+    function getLanguageFromElement(element) {
+        if (!element || !element.classList) {
+            return '';
+        }
+
+        const classes = Array.prototype.slice.call(element.classList);
+
+        for (let index = 0; index < classes.length; index += 1) {
+            const className = classes[index];
+            const matched = className.match(/^(?:language-|lang-)([a-z0-9+#-]+)$/i);
+
+            if (matched) {
+                return normalizeLanguage(matched[1]);
+            }
+        }
+
+        for (let index = 0; index < classes.length; index += 1) {
+            const className = classes[index];
+
+            if (className.indexOf('brush:') === 0) {
+                return normalizeLanguage(className);
+            }
+        }
+
+        return '';
+    }
+
+    function getLanguage(block, codeElement) {
+        return getLanguageFromElement(codeElement) || getLanguageFromElement(block);
+    }
+
+    function getAvailableAutoDetectLanguages() {
+        if (!window.hljs || !window.hljs.getLanguage) {
+            return [];
+        }
+
+        return autoDetectLanguages.filter(function (language) {
+            return window.hljs.getLanguage(language);
+        });
+    }
+
+    function highlightCode(codeText, language) {
+        if (!syntaxEnabled || !window.hljs) {
+            return null;
+        }
+
+        const normalizedLanguage = normalizeLanguage(language);
+
+        try {
+            if (normalizedLanguage && window.hljs.getLanguage(normalizedLanguage)) {
+                return {
+                    html: window.hljs.highlight(codeText, {
+                        language: normalizedLanguage,
+                        ignoreIllegals: true
+                    }).value,
+                    language: normalizedLanguage
+                };
+            }
+
+            const highlighted = window.hljs.highlightAuto(codeText, getAvailableAutoDetectLanguages());
+
+            return {
+                html: highlighted.value,
+                language: highlighted.language || ''
+            };
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function setCodeContent(codeContainer, codeText, language) {
+        const highlighted = highlightCode(codeText, language);
+
+        if (!highlighted) {
+            codeContainer.textContent = codeText;
+            return '';
+        }
+
+        codeContainer.innerHTML = highlighted.html;
+        codeContainer.classList.add('hljs');
+
+        return highlighted.language;
+    }
+
     function enhanceBlock(block) {
         if (block.classList.contains('custom-code-block')) {
             return;
         }
 
-        const codeText = block.textContent || '';
+        const originalCode = block.querySelector('code');
+        const codeText = originalCode ? originalCode.textContent || '' : block.textContent || '';
+        const language = getLanguage(block, originalCode);
         const codeContainer = document.createElement('code');
         const button = document.createElement('button');
 
@@ -77,7 +206,12 @@
         block.classList.toggle('no-line-numbers', !lineNumbersEnabled);
 
         codeContainer.className = 'custom-code-content';
-        codeContainer.textContent = codeText;
+        const detectedLanguage = setCodeContent(codeContainer, codeText, language);
+
+        if (detectedLanguage) {
+            block.setAttribute('data-language', detectedLanguage);
+            codeContainer.classList.add('language-' + detectedLanguage);
+        }
 
         if (lineNumbersEnabled) {
             block.appendChild(createLineNumbers(codeText));

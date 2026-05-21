@@ -10,8 +10,15 @@ Thumbs.db
 # Dependency and build artifacts.
 node_modules/
 vendor/
+!assets/
+!assets/vendor/
+!assets/vendor/**
 dist/
 build/
+
+# Generated release/submission packages.
+*.zip
+simple-code-block-highlighter-svn-submit-*/
 
 # Logs and environment files.
 *.log

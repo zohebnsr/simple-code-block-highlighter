@@ -1,6 +1,8 @@
 # Simple Code Block Highlighter
 
-Simple Code Block Highlighter is a WordPress plugin that enhances core code and preformatted blocks with optional line numbers, a copy button, and light or dark themes.
+Simple Code Block Highlighter is a WordPress plugin that enhances core code and preformatted blocks with optional line numbers, a copy button, syntax highlighting, and light or dark themes.
+
+Download from WordPress.org: https://wordpress.org/plugins/simple-code-block-highlighter/
 
 ## Security-focused implementation
 
@@ -8,8 +10,16 @@ Simple Code Block Highlighter is a WordPress plugin that enhances core code and 
 - Requires the `manage_options` capability before rendering the settings page.
 - Sanitizes and validates all saved settings before use.
 - Escapes admin output with WordPress escaping helpers.
-- Avoids JavaScript `innerHTML` rendering for code-derived UI.
+- Uses bundled Highlight.js assets instead of loading a third-party CDN on visitor pages.
 - Keeps plugin data on deactivation and removes it only through `uninstall.php`.
+
+## Syntax highlighting
+
+The plugin supports language classes such as `language-html`, `language-css`, `language-javascript`, `language-python`, `language-php`, `language-json`, `language-bash`, and `language-sql`. When no language class is available, Highlight.js auto-detection is used.
+
+Bundled third-party asset:
+
+- Highlight.js `11.11.1`, BSD-3-Clause license, in `assets/vendor/highlightjs/`.
 
 ## Installation
 

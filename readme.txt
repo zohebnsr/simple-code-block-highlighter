@@ -4,17 +4,17 @@ Tags: code, highlighter, syntax, code block, copy button
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.5
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Enhances WordPress code blocks with line numbers, copy functionality, and light or dark themes.
+Enhances WordPress code blocks with line numbers, copy functionality, syntax highlighting, and light or dark themes.
 
 == Description ==
 
-Simple Code Block Highlighter enhances the default WordPress code and preformatted blocks. It can show line numbers, add a copy-to-clipboard button, and switch between light and dark display themes.
+Simple Code Block Highlighter enhances the default WordPress code and preformatted blocks. It can show line numbers, add a copy-to-clipboard button, switch between light and dark display themes, and color code by language with bundled Highlight.js syntax highlighting.
 
-The plugin uses the WordPress Settings API, validates and sanitizes saved options, escapes admin output, and avoids inline JavaScript-generated HTML for line numbers.
+The plugin uses the WordPress Settings API, validates and sanitizes saved options, escapes admin output, and avoids inline JavaScript-generated HTML for line numbers. Syntax highlighting is served from the plugin files and does not load a third-party CDN on visitor pages.
 
 == Installation ==
 
@@ -32,7 +32,30 @@ No. The plugin only stores administrator-selected display settings in the WordPr
 
 No. Code blocks are enhanced in the browser after the page loads. The saved post content is not modified.
 
+= How do I set a code language? =
+
+Add a class such as `language-html`, `language-css`, `language-javascript`, `language-python`, `language-php`, or `language-json` to a WordPress code block. If no language class is found, the plugin tries to auto-detect the language.
+
+== Third-party Libraries ==
+
+This plugin bundles Highlight.js 11.11.1 for syntax highlighting.
+
+Highlight.js
+Source: https://github.com/highlightjs/highlight.js
+License: BSD 3-Clause
+License file included at: assets/vendor/highlightjs/LICENSE
+
+== Screenshots ==
+
+1. Frontend code block with syntax highlighting, line numbers, and copy button.
+2. Plugin settings page with display options.
+
 == Changelog ==
+
+= 1.2.0 =
+* Added bundled Highlight.js syntax highlighting for common languages.
+* Added automatic language detection with support for `language-*` and `lang-*` classes.
+* Added a setting to enable or disable syntax highlighting.
 
 = 1.1.0 =
 * Hardened settings validation, sanitization, escaping, and capability checks.

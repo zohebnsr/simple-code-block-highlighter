@@ -3,7 +3,7 @@
  * Plugin Name: Simple Code Block Highlighter
  * Plugin URI: https://www.techgrapple.com/simple-code-block-highlighter-free-plugin-for-wordpress/
  * Description: Enhances the default WordPress code block with line numbers, copy functionality, and theme options.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Requires at least: 5.0
  * Requires PHP: 7.4
  * Author: TechGrapple
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SIMPLE_CODE_BLOCK_HIGHLIGHTER_VERSION', '1.1.0' );
+define( 'SIMPLE_CODE_BLOCK_HIGHLIGHTER_VERSION', '1.2.0' );
 define( 'SIMPLE_CODE_BLOCK_HIGHLIGHTER_OPTION', 'simple_code_block_highlighter_options' );
 
 /**
@@ -31,6 +31,7 @@ function simple_code_block_highlighter_default_options() {
 	return array(
 		'line_numbers' => 'on',
 		'theme'        => 'light',
+		'syntax'       => 'on',
 	);
 }
 
@@ -58,10 +59,13 @@ function simple_code_block_highlighter_assets() {
 	$options      = simple_code_block_highlighter_get_options();
 	$style_path   = plugin_dir_path( __FILE__ ) . 'style.css';
 	$script_path  = plugin_dir_path( __FILE__ ) . 'script.js';
+	$hljs_path    = plugin_dir_path( __FILE__ ) . 'assets/vendor/highlightjs/highlight.min.js';
 	$style_url    = plugin_dir_url( __FILE__ ) . 'style.css';
 	$script_url   = plugin_dir_url( __FILE__ ) . 'script.js';
+	$hljs_url     = plugin_dir_url( __FILE__ ) . 'assets/vendor/highlightjs/highlight.min.js';
 	$style_ver    = file_exists( $style_path ) ? (string) filemtime( $style_path ) : SIMPLE_CODE_BLOCK_HIGHLIGHTER_VERSION;
 	$script_ver   = file_exists( $script_path ) ? (string) filemtime( $script_path ) : SIMPLE_CODE_BLOCK_HIGHLIGHTER_VERSION;
+	$hljs_ver     = file_exists( $hljs_path ) ? (string) filemtime( $hljs_path ) : SIMPLE_CODE_BLOCK_HIGHLIGHTER_VERSION;
 	$dependencies = array();
 
 	wp_enqueue_style(
@@ -70,6 +74,18 @@ function simple_code_block_highlighter_assets() {
 		array(),
 		$style_ver
 	);
+
+	if ( 'on' === $options['syntax'] ) {
+		wp_enqueue_script(
+			'simple-code-block-highlighter-highlightjs',
+			$hljs_url,
+			array(),
+			$hljs_ver,
+			true
+		);
+
+		$dependencies[] = 'simple-code-block-highlighter-highlightjs';
+	}
 
 	wp_enqueue_script(
 		'simple-code-block-highlighter-script',
@@ -85,6 +101,7 @@ function simple_code_block_highlighter_assets() {
 		array(
 			'line_numbers'     => $options['line_numbers'],
 			'theme'            => $options['theme'],
+			'syntax'           => $options['syntax'],
 			'copy_text'        => esc_html__( 'Copy', 'simple-code-block-highlighter' ),
 			'copied_text'      => esc_html__( 'Copied', 'simple-code-block-highlighter' ),
 			'copy_failed_text' => esc_html__( 'Copy failed', 'simple-code-block-highlighter' ),
@@ -188,6 +205,14 @@ function simple_code_block_highlighter_register_settings() {
 		'simple-code-block-highlighter',
 		'main_section'
 	);
+
+	add_settings_field(
+		'syntax',
+		esc_html__( 'Enable Syntax Highlighting', 'simple-code-block-highlighter' ),
+		'simple_code_block_highlighter_setting_syntax',
+		'simple-code-block-highlighter',
+		'main_section'
+	);
 }
 add_action( 'admin_init', 'simple_code_block_highlighter_register_settings' );
 
@@ -241,6 +266,27 @@ function simple_code_block_highlighter_setting_theme() {
 }
 
 /**
+ * Render the syntax highlighting setting.
+ *
+ * @return void
+ */
+function simple_code_block_highlighter_setting_syntax() {
+	$options = simple_code_block_highlighter_get_options();
+	?>
+	<label for="syntax">
+		<input
+			id="syntax"
+			name="<?php echo esc_attr( SIMPLE_CODE_BLOCK_HIGHLIGHTER_OPTION ); ?>[syntax]"
+			type="checkbox"
+			value="on"
+			<?php checked( 'on', $options['syntax'] ); ?>
+		/>
+		<?php echo esc_html__( 'Color code by language when a code block declares a language, or auto-detect when it does not.', 'simple-code-block-highlighter' ); ?>
+	</label>
+	<?php
+}
+
+/**
  * Sanitize saved settings.
  *
  * @param mixed $input Raw options.
@@ -259,9 +305,13 @@ function simple_code_block_highlighter_sanitize_options( $input ) {
 	$theme        = isset( $input['theme'] ) && is_scalar( $input['theme'] )
 		? sanitize_key( wp_unslash( (string) $input['theme'] ) )
 		: $defaults['theme'];
+	$syntax       = isset( $input['syntax'] ) && is_scalar( $input['syntax'] )
+		? sanitize_key( wp_unslash( (string) $input['syntax'] ) )
+		: 'off';
 
 	return array(
 		'line_numbers' => 'on' === $line_numbers ? 'on' : 'off',
 		'theme'        => in_array( $theme, array( 'light', 'dark' ), true ) ? $theme : $defaults['theme'],
+		'syntax'       => 'on' === $syntax ? 'on' : 'off',
 	);
 }
